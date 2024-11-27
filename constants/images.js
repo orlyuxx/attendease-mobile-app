@@ -8,6 +8,7 @@ import empty from "../assets/images/empty.png";
 import attendeaseLogo from "../assets/images/attendeaseLogo.png";
 import attendeaseIcon from "../assets/images/attendeaseIcon.png";
 import birLogo from "../assets/images/birLogo.png";
+import employee from "../assets/images/employee.png";
 
 export default {
   profile,
@@ -20,4 +21,5 @@ export default {
   attendeaseLogo,
   attendeaseIcon,
   birLogo,
+  employee,
 };

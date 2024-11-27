@@ -23,6 +23,7 @@ export default function App() {
   const [passwordFocused, setPasswordFocused] = React.useState(false);
   const [refreshing, setRefreshing] = React.useState(false);
   const [passwordVisible, setPasswordVisible] = React.useState(false);
+  const passwordInputRef = React.useRef(null);
 
   const onRefresh = React.useCallback(() => {
     setRefreshing(true);
@@ -54,7 +55,7 @@ export default function App() {
       >
         <TouchableWithoutFeedback onPress={handlePressOutside}>
           <View className="w-full min-h-full px-6 pt-8">
-            <View className="mb-32">
+            <View>
               <Text className="font-pextrabold text-3xl text-text-header">
                 Welcome Back 👋
               </Text>
@@ -66,31 +67,44 @@ export default function App() {
               </Text>
             </View>
 
+            <View className="items-center">
+              <Image
+                source={images.employee}
+                className="w-64 h-64"
+                resizeMode="contain"
+              />
+            </View>
+
             <View className="w-full mb-4">
-              <Text className="text-sm font-pregular text-text-sub mb-2">
+              <Text className="text-sm font-pregular text-text-sub mb-1">
                 Email Address
               </Text>
               <TextInput
                 value={email}
                 onChangeText={setEmail}
-                placeholder="Enter Email Address"
                 className={`border ${
                   emailFocused ? "border-my-blue-400" : "border-gray-300"
                 } text-md rounded-xl p-3`}
                 onFocus={() => setEmailFocused(true)}
                 onBlur={() => setEmailFocused(false)}
+                returnKeyType="next"
+                onSubmitEditing={() => {
+                  setTimeout(() => {
+                    passwordInputRef.current.focus();
+                  }, 0.5);
+                }}
               />
             </View>
 
-            <View className="w-full mb-4">
-              <Text className="text-sm font-pregular text-text-sub mb-2">
+            <View className="w-full mb-2">
+              <Text className="text-sm font-pregular text-text-sub mb-1">
                 Password
               </Text>
               <View className="relative">
                 <TextInput
+                  ref={passwordInputRef}
                   value={password}
                   onChangeText={setPassword}
-                  placeholder="Enter Password"
                   secureTextEntry={!passwordVisible}
                   className={`border ${
                     passwordFocused ? "border-my-blue-400" : "border-gray-300"
@@ -111,13 +125,13 @@ export default function App() {
             </View>
 
             <TouchableOpacity className="mb-2 self-end">
-              <Text className="text-text-primary font-pregular mb-4 self-end">
+              <Text className="text-text-sub font-pregular mb-2 self-end">
                 Forgot Password?
               </Text>
             </TouchableOpacity>
 
             <TouchableOpacity
-              className="bg-my-blue w-full py-4 rounded-xl mb-4"
+              className="bg-my-blue w-full py-3 rounded-xl mb-4"
               activeOpacity={0.7}
             >
               <Text className="text-white text-center font-semibold font-psemibold">
@@ -128,7 +142,7 @@ export default function App() {
             <Text className="text-text-sub font-pregular text-center">
               Didn't have an account?{" "}
               <Link
-                href="/home"
+                href="/sign-up"
                 className=" font-pregular text-my-blue-500 underline"
               >
                 Register

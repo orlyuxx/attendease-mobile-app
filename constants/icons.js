@@ -13,6 +13,7 @@ import eye from "../assets/icons/eye.png";
 import play from "../assets/icons/play.png";
 import leave from "../assets/icons/leave.png";
 import history from "../assets/icons/history.png";
+import arrow from "../assets/icons/arrow.png";
 
 export default {
   play,
@@ -30,4 +31,5 @@ export default {
   eye,
   leave,
   history,
+  arrow,
 };
