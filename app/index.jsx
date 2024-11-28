@@ -76,7 +76,7 @@ export default function App() {
               </View>
             </View>
 
-            <View className="items-center">
+            <View className="items-center my-4">
               <Image
                 source={images.employee}
                 className="w-64 h-64"
@@ -138,7 +138,7 @@ export default function App() {
           </View>
         </TouchableWithoutFeedback>
       </ScrollView>
-      <StatusBar backgroundColor="#1b5dda" barStyle="light" />
+      <StatusBar backgroundColor="#1b5dda" barStyle="light-content" />
     </SafeAreaView>
   );
 }
