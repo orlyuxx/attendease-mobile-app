@@ -15,8 +15,11 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import { images, icons } from "../constants";
 import { Link } from "expo-router";
 import { hide } from "expo-splash-screen";
+import LoginInput from "../components/LoginInput";
+import { useRouter } from "expo-router";
 
 export default function App() {
+  const router = useRouter();
   const [email, setEmail] = React.useState("");
   const [password, setPassword] = React.useState("");
   const [emailFocused, setEmailFocused] = React.useState(false);
@@ -43,6 +46,10 @@ export default function App() {
     setPasswordFocused(false);
   };
 
+  const handleLogin = () => {
+    router.push("/(tabs)/home");
+  };
+
   return (
     <SafeAreaView className="h-full bg-white">
       <ScrollView
@@ -56,15 +63,17 @@ export default function App() {
         <TouchableWithoutFeedback onPress={handlePressOutside}>
           <View className="w-full min-h-full px-6 pt-8">
             <View>
-              <Text className="font-pextrabold text-3xl text-text-header">
-                Welcome Back 👋
-              </Text>
-              <Text className="font-pextrabold text-3xl text-text-header">
-                to Attendease
-              </Text>
-              <Text className="text-md font-pregular pt-2 text-text-sub">
-                Hello there, login to continue
-              </Text>
+              <View>
+                <Text className="font-pextrabold text-3xl text-text-header">
+                  Welcome Back 👋
+                </Text>
+                <Text className="font-pextrabold text-3xl text-text-header">
+                  to Attendease
+                </Text>
+                <Text className="text-md font-pregular pt-2 text-text-sub">
+                  Hello there, login to continue
+                </Text>
+              </View>
             </View>
 
             <View className="items-center">
@@ -75,54 +84,31 @@ export default function App() {
               />
             </View>
 
-            <View className="w-full mb-4">
-              <Text className="text-sm font-pregular text-text-sub mb-1">
-                Email Address
-              </Text>
-              <TextInput
-                value={email}
-                onChangeText={setEmail}
-                className={`border ${
-                  emailFocused ? "border-my-blue-400" : "border-gray-300"
-                } text-md rounded-xl p-3`}
-                onFocus={() => setEmailFocused(true)}
-                onBlur={() => setEmailFocused(false)}
-                returnKeyType="next"
-                onSubmitEditing={() => {
-                  setTimeout(() => {
-                    passwordInputRef.current.focus();
-                  }, 0.5);
-                }}
-              />
-            </View>
+            <LoginInput
+              label="Email Address"
+              value={email}
+              onChangeText={setEmail}
+              isFocused={emailFocused}
+              onFocus={() => setEmailFocused(true)}
+              onBlur={() => setEmailFocused(false)}
+              returnKeyType="next"
+              onSubmitEditing={() => {
+                setTimeout(() => {
+                  passwordInputRef.current.focus();
+                }, 0.5);
+              }}
+            />
 
-            <View className="w-full mb-2">
-              <Text className="text-sm font-pregular text-text-sub mb-1">
-                Password
-              </Text>
-              <View className="relative">
-                <TextInput
-                  ref={passwordInputRef}
-                  value={password}
-                  onChangeText={setPassword}
-                  secureTextEntry={!passwordVisible}
-                  className={`border ${
-                    passwordFocused ? "border-my-blue-400" : "border-gray-300"
-                  } rounded-xl p-3 pr-10`}
-                  onFocus={() => setPasswordFocused(true)}
-                  onBlur={() => setPasswordFocused(false)}
-                />
-                <TouchableOpacity
-                  onPress={() => setPasswordVisible(!passwordVisible)}
-                  style={{ position: "absolute", right: 10, top: 10 }}
-                >
-                  <Image
-                    source={passwordVisible ? icons.eye : icons.eyeHide}
-                    style={{ width: 20, height: 20 }}
-                  />
-                </TouchableOpacity>
-              </View>
-            </View>
+            <LoginInput
+              label="Password"
+              value={password}
+              onChangeText={setPassword}
+              isFocused={passwordFocused}
+              onFocus={() => setPasswordFocused(true)}
+              onBlur={() => setPasswordFocused(false)}
+              secureTextEntry={!passwordVisible}
+              inputRef={passwordInputRef}
+            />
 
             <TouchableOpacity className="mb-2 self-end">
               <Text className="text-text-sub font-pregular mb-2 self-end">
@@ -133,6 +119,7 @@ export default function App() {
             <TouchableOpacity
               className="bg-my-blue w-full py-3 rounded-xl mb-4"
               activeOpacity={0.7}
+              onPress={handleLogin}
             >
               <Text className="text-white text-center font-semibold font-psemibold">
                 Login
