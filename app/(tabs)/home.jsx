@@ -8,19 +8,18 @@ import {
 } from "react-native";
 import React from "react";
 import { images } from "../../constants";
+import { icons } from "../../constants";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Link } from "expo-router";
 import Icon from "react-native-vector-icons/MaterialIcons";
+import AttendanceCard from "../../components/AttendanceCard";
+import CalendarStrip from "../../components/CalendarStrip";
 
 const Home = () => {
-  // Mock data for calendar
-  const days = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
-  const currentDate = new Date();
-  const currentDayIndex = currentDate.getDay();
-
-  // Calculate the start of the week (Sunday)
-  const startOfWeek = new Date(currentDate);
-  startOfWeek.setDate(currentDate.getDate() - currentDayIndex);
+  const handleLogAttendance = () => {
+    // Your logic for logging attendance
+    console.log("Logging attendance...");
+  };
 
   return (
     <SafeAreaView className="flex-1 bg-white">
@@ -48,40 +47,7 @@ const Home = () => {
       </View>
 
       {/* Calendar Strip */}
-      <View className="mt-8 mb-2 px-6">
-        <View className="flex-row justify-between">
-          {days.map((day, index) => {
-            const dayDate = new Date(startOfWeek);
-            dayDate.setDate(startOfWeek.getDate() + index);
-
-            return (
-              <View key={index} className="items-center">
-                <Text className="text-text-sub font-pregular text-sm mb-2">
-                  {day}
-                </Text>
-                <TouchableOpacity
-                  className={`w-8 h-8 rounded-xl items-center justify-center
-                    ${
-                      index === currentDayIndex
-                        ? "bg-[#1b5dda]"
-                        : "bg-transparent"
-                    }`}
-                >
-                  <Text
-                    className={
-                      index === currentDayIndex
-                        ? "text-white"
-                        : "text-text-sub font-pregular"
-                    }
-                  >
-                    {dayDate.getDate()}
-                  </Text>
-                </TouchableOpacity>
-              </View>
-            );
-          })}
-        </View>
-      </View>
+      <CalendarStrip />
 
       {/* Today Attendance Section */}
       <View className="mt-8 px-6">
@@ -89,83 +55,37 @@ const Home = () => {
           Today's Attendance
         </Text>
         <View className="flex-row justify-between">
-          <TouchableOpacity
-            className="bg-gray-50 p-4 rounded-xl w-[48%] active:bg-gray-100"
-            onPress={() => {
-              Alert.alert(
-                "Log Attendance",
-                "Do you want to log your attendance now?",
-                [
-                  {
-                    text: "Cancel",
-                    style: "cancel",
-                  },
-                  {
-                    text: "Yes, Log In",
-                    onPress: () => {
-                      // Add your time in logic here
-                      console.log("Logging attendance...");
-                    },
-                  },
-                ]
-              );
-            }}
-          >
-            <View className="flex-row items-center gap-2">
-              <View className="w-8 h-8 bg-blue-100 rounded-lg items-center justify-center">
-                <Icon name="check-circle" size={20} color="#1b5dda" />
-              </View>
-              <Text className="text-text-primary text-md font-psemibold">
-                Time In
-              </Text>
-            </View>
-            <Text className="text-sm font-psemibold mt-4">10:20 AM</Text>
-            <Text className="text-text-sub font-pregular text-xs">On Time</Text>
-          </TouchableOpacity>
-
-          <View className="bg-gray-50 p-4 rounded-xl w-[48%]">
-            <View className="flex-row items-center gap-2">
-              <View className="w-8 h-8 bg-blue-100 rounded-lg items-center justify-center">
-                <Icon name="exit-to-app" size={20} color="#1b5dda" />
-              </View>
-              <Text className="text-text-primary text-md font-psemibold">
-                Time Out
-              </Text>
-            </View>
-            <Text className="text-sm font-psemibold mt-4">07:00 PM</Text>
-            <Text className="text-text-sub font-pregular text-xs">Go Home</Text>
-          </View>
+          <AttendanceCard
+            title="Time In"
+            icon="check-circle"
+            time="10:20 AM"
+            status="On Time"
+            onPress={handleLogAttendance}
+          />
+          <AttendanceCard
+            title="Time Out"
+            icon="exit-to-app"
+            time="07:00 PM"
+            status="On Time"
+            onPress={handleLogAttendance}
+          />
         </View>
-      </View>
 
-      {/* Statistics Section */}
-      <View className="mt-4 mb-4 px-6">
-        <View className="flex-row justify-between">
-          <View className="bg-gray-50 p-4 rounded-xl w-[48%]">
-            <View className="flex-row items-center gap-2">
-              <View className="w-8 h-8 bg-blue-100 rounded-lg items-center justify-center">
-                <Icon name="coffee" size={20} color="#1b5dda" />
-              </View>
-              <Text className="text-text-primary text-md font-psemibold">
-                Break In
-              </Text>
-            </View>
-            <Text className="text-sm font-psemibold mt-4">12:00 PM</Text>
-            <Text className="text-text-sub font-pregular text-xs">On Time</Text>
-          </View>
-
-          <View className="bg-gray-50 p-4 rounded-xl w-[48%]">
-            <View className="flex-row items-center gap-2">
-              <View className="w-8 h-8 bg-blue-100 rounded-lg items-center justify-center">
-                <Icon name="alarm" size={20} color="#1b5dda" />
-              </View>
-              <Text className="text-text-primary text-md font-psemibold">
-                Break Out
-              </Text>
-            </View>
-            <Text className="text-sm font-psemibold mt-4">12:57 PM</Text>
-            <Text className="text-text-sub font-pregular text-xs">On Time</Text>
-          </View>
+        <View className="mt-4 flex-row justify-between">
+          <AttendanceCard
+            title="Break In"
+            icon="coffee"
+            time="12:00 PM"
+            status="On Time"
+            onPress={handleLogAttendance}
+          />
+          <AttendanceCard
+            title="Break Out"
+            icon="alarm"
+            time="12:57 PM"
+            status="On Time"
+            onPress={handleLogAttendance}
+          />
         </View>
       </View>
 
@@ -186,18 +106,18 @@ const Home = () => {
         </View>
 
         <ScrollView
-          className="flex-1"
+          className="flex-1 "
           showsVerticalScrollIndicator={true}
           contentContainerStyle={{ paddingBottom: 60 }}
         >
           <View className="bg-gray-50 p-4 rounded-xl flex-row items-center justify-between">
             <View className="flex-row items-center gap-3">
               <View className="w-10 h-10 bg-blue-100 rounded-lg items-center justify-center">
-                {/* Add check-in icon */}
+                <Icon name="check-circle" size={20} color="#1b5dda" />
               </View>
               <View>
                 <Text className="text-text-primary text-md font-psemibold">
-                  Check In
+                  Time In
                 </Text>
                 <Text className="text-text-sub text-sm font-pregular">
                   November 29, 2024
@@ -217,11 +137,11 @@ const Home = () => {
           <View className="bg-gray-50 mt-2 p-4 rounded-xl flex-row items-center justify-between">
             <View className="flex-row items-center gap-3">
               <View className="w-10 h-10 bg-blue-100 rounded-lg items-center justify-center">
-                {/* Add check-in icon */}
+                <Icon name="exit-to-app" size={20} color="#1b5dda" />
               </View>
               <View>
                 <Text className="text-text-primary text-md font-psemibold">
-                  Check Out
+                  Time Out
                 </Text>
                 <Text className="text-text-sub text-sm font-pregular">
                   November 28, 2024
@@ -241,7 +161,7 @@ const Home = () => {
           <View className="bg-gray-50 mt-2 p-4 rounded-xl flex-row items-center justify-between">
             <View className="flex-row items-center gap-3">
               <View className="w-10 h-10 bg-blue-100 rounded-lg items-center justify-center">
-                {/* Add check-in icon */}
+                <Icon name="assignment" size={20} color="#1b5dda" />
               </View>
               <View>
                 <Text className="text-text-primary text-md font-psemibold">
@@ -265,7 +185,7 @@ const Home = () => {
           <View className="bg-gray-50 mt-2 p-4 rounded-xl flex-row items-center justify-between">
             <View className="flex-row items-center gap-3">
               <View className="w-10 h-10 bg-blue-100 rounded-lg items-center justify-center">
-                {/* Add check-in icon */}
+                <Icon name="assignment" size={20} color="#1b5dda" />
               </View>
               <View>
                 <Text className="text-text-primary text-md font-psemibold">
@@ -288,7 +208,7 @@ const Home = () => {
           <View className="bg-gray-50 mt-2 p-4 rounded-xl flex-row items-center justify-between">
             <View className="flex-row items-center gap-3">
               <View className="w-10 h-10 bg-blue-100 rounded-lg items-center justify-center">
-                {/* Add check-in icon */}
+                <Icon name="assignment" size={20} color="#1b5dda" />
               </View>
               <View>
                 <Text className="text-text-primary text-md font-psemibold">

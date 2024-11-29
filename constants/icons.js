@@ -15,6 +15,7 @@ import leave from "../assets/icons/leave.png";
 import history from "../assets/icons/history.png";
 import arrow from "../assets/icons/arrow.png";
 import alarm from "../assets/icons/alarm.png";
+import employeLeave from "../assets/icons/employee-leave.png";
 
 export default {
   play,
@@ -34,4 +35,5 @@ export default {
   history,
   arrow,
   alarm,
+  employeLeave,
 };
