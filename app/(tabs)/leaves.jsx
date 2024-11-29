@@ -1,12 +1,19 @@
-import { View, Text, ScrollView, Pressable } from "react-native";
-import React from "react";
+import {
+  View,
+  Text,
+  ScrollView,
+  Pressable,
+  RefreshControl,
+} from "react-native";
+import React, { useState } from "react";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { createMaterialTopTabNavigator } from "@react-navigation/material-top-tabs";
+import { router } from "expo-router";
 
 const Tab = createMaterialTopTabNavigator();
 
 const StatCard = ({ label, value, bgColor }) => (
-  <View className={`${bgColor} p-4 flex-1  rounded-xl mx-1 `}>
+  <View className={`${bgColor} p-4 flex-1 rounded-xl mx-1`}>
     <Text className="text-text-primary text-md font-psemibold mb-2">
       {label}
     </Text>
@@ -58,7 +65,7 @@ const LeaveItem = ({ leaveType, status, dateRange }) => {
   }
 
   return (
-    <View className="bg-white p-4 rounded-xl mb-4">
+    <View className="bg-gray-50 p-4 rounded-xl mb-4 mx-4">
       <View className="flex-row justify-between items-center">
         <Text className="text-text-primary text-md font-psemibold">
           {leaveType}
@@ -94,8 +101,17 @@ const LeaveItem = ({ leaveType, status, dateRange }) => {
   );
 };
 
-const AllLeaves = () => {
-  const [activeFilter, setActiveFilter] = React.useState("All");
+const AllLeaves = ({ navigation }) => {
+  const [activeFilter, setActiveFilter] = useState("All");
+  const [refreshing, setRefreshing] = useState(false);
+
+  const onRefresh = () => {
+    setRefreshing(true);
+    console.log("Refreshing leaves...");
+    setTimeout(() => {
+      setRefreshing(false);
+    }, 1500);
+  };
 
   const leaveItems = [
     {
@@ -113,6 +129,21 @@ const AllLeaves = () => {
       status: "Pending",
       dateRange: "Jan 4, 2025 - Jan 6, 2025",
     },
+    {
+      leaveType: "Maternal Leave",
+      status: "Pending",
+      dateRange: "Jan 4, 2025 - Jan 6, 2025",
+    },
+    {
+      leaveType: "Maternal Leave",
+      status: "Pending",
+      dateRange: "Jan 4, 2025 - Jan 6, 2025",
+    },
+    {
+      leaveType: "Maternal Leave",
+      status: "Pending",
+      dateRange: "Jan 4, 2025 - Jan 6, 2025",
+    },
   ];
 
   const filteredLeaves = leaveItems.filter((item) => {
@@ -121,62 +152,61 @@ const AllLeaves = () => {
   });
 
   return (
-    <View className="flex-1 bg-gray-50">
-      {/* Header */}
-      <View className="flex-row justify-between items-center mb-6 px-4 pt-4">
-        <Text className="text-xl text-text-header font-psemibold">
-          All Leaves
-        </Text>
-        <View className="flex-row space-x-3">
-          <MaterialCommunityIcons name="plus" size={24} color="black" />
-        </View>
-      </View>
-
-      {/* Fixed Content */}
-      <View className="px-4">
-        {/* Stats Cards - Row 1 */}
-        <View className="flex-row mb-2">
-          <StatCard label="Leave Balance" value="17" bgColor="bg-blue-50" />
-          <StatCard label="Approved Leave" value="1" bgColor="bg-green-50" />
+    <ScrollView
+      className="flex-1 bg-white"
+      contentContainerStyle={{ paddingBottom: 60 }}
+      refreshControl={
+        <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+      }
+    >
+      <View className="bg-white">
+        {/* Header */}
+        <View className="flex-row justify-between items-center mb-6 px-4 pt-4">
+          <Pressable onPress={() => router.push("/apply-leave")}>
+            <MaterialCommunityIcons name="plus" size={24} color="black" />
+          </Pressable>
         </View>
 
-        {/* Stats Cards - Row 2 */}
-        <View className="flex-row mb-12">
-          <StatCard label="Pending Leave" value="1" bgColor="bg-gray-100" />
-          <StatCard label="Rejected Leave" value="1" bgColor="bg-red-50" />
+        {/* Fixed Content */}
+        <View className="px-4">
+          {/* Stats Cards - Row 1 */}
+          <View className="flex-row mb-2">
+            <StatCard label="Leave Balance" value="17" bgColor="bg-blue-50" />
+            <StatCard label="Approved Leave" value="1" bgColor="bg-green-50" />
+          </View>
+
+          {/* Stats Cards - Row 2 */}
+          <View className="flex-row mb-12">
+            <StatCard label="Pending Leave" value="1" bgColor="bg-gray-100" />
+            <StatCard label="Rejected Leave" value="1" bgColor="bg-red-50" />
+          </View>
+
+          {/* Filter Buttons */}
+          <View className="flex-row space-x-2 mb-6 p-2 rounded-xl">
+            <FilterButton
+              label="All"
+              active={activeFilter === "All"}
+              onPress={() => setActiveFilter("All")}
+            />
+            <FilterButton
+              label="Pending"
+              active={activeFilter === "Pending"}
+              onPress={() => setActiveFilter("Pending")}
+            />
+            <FilterButton
+              label="Approved"
+              active={activeFilter === "Approved"}
+              onPress={() => setActiveFilter("Approved")}
+            />
+            <FilterButton
+              label="Rejected"
+              active={activeFilter === "Rejected"}
+              onPress={() => setActiveFilter("Rejected")}
+            />
+          </View>
         </View>
 
-        {/* Filter Buttons */}
-        <View className="flex-row space-x-2 mb-6 p-2 rounded-xl">
-          <FilterButton
-            label="All"
-            active={activeFilter === "All"}
-            onPress={() => setActiveFilter("All")}
-          />
-          <FilterButton
-            label="Pending"
-            active={activeFilter === "Pending"}
-            onPress={() => setActiveFilter("Pending")}
-          />
-          <FilterButton
-            label="Approved"
-            active={activeFilter === "Approved"}
-            onPress={() => setActiveFilter("Approved")}
-          />
-          <FilterButton
-            label="Rejected"
-            active={activeFilter === "Rejected"}
-            onPress={() => setActiveFilter("Rejected")}
-          />
-        </View>
-      </View>
-
-      {/* Scrollable Leave Items */}
-      <ScrollView
-        className="flex-1"
-        showsVerticalScrollIndicator={true}
-        contentContainerStyle={{ paddingHorizontal: 16, paddingBottom: 60 }}
-      >
+        {/* Leave Items */}
         {filteredLeaves.map((item, index) => (
           <LeaveItem
             key={index}
@@ -185,29 +215,37 @@ const AllLeaves = () => {
             dateRange={item.dateRange}
           />
         ))}
-      </ScrollView>
-    </View>
+      </View>
+    </ScrollView>
   );
 };
 
 const PassSlip = () => {
+  const [refreshing, setRefreshing] = useState(false);
+
+  const onRefresh = () => {
+    setRefreshing(true);
+    console.log("Refreshing pass slips...");
+    setTimeout(() => {
+      setRefreshing(false);
+    }, 1500);
+  };
+
   return (
-    <View className="flex-1 bg-gray-50">
+    <ScrollView
+      className="flex-1 bg-gray-50"
+      contentContainerStyle={{ paddingHorizontal: 16, paddingBottom: 60 }}
+      refreshControl={
+        <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+      }
+    >
       <View className="flex-row justify-between items-center mb-6 px-4 pt-4">
-        <Text className="text-xl text-text-header font-psemibold">
-          Pass Slip
-        </Text>
         <MaterialCommunityIcons name="plus" size={24} color="black" />
       </View>
 
       {/* Add your Pass Slip content here */}
-      <ScrollView
-        className="flex-1"
-        contentContainerStyle={{ paddingHorizontal: 16, paddingBottom: 60 }}
-      >
-        <Text className="text-text-sub">No pass slips found</Text>
-      </ScrollView>
-    </View>
+      <Text className="text-text-sub">No pass slips found</Text>
+    </ScrollView>
   );
 };
 
