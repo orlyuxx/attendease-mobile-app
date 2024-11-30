@@ -82,7 +82,6 @@ const LeaveRequestForm = () => {
           <TextInput
             value={leaveType}
             onChangeText={setLeaveType}
-            placeholder="Enter Leave Type"
             className={`border ${
               isFocusedLeaveType ? "border-my-blue-400" : "border-gray-300"
             } text-md rounded-xl p-4 mb-6`}
@@ -106,7 +105,7 @@ const LeaveRequestForm = () => {
               value={startDate}
               placeholder="Select Start Date"
               editable={false} // Make it non-editable
-              className={`border border-gray-300 text-md rounded-xl p-4 mb-6`}
+              className={`border border-gray-300 text-sm rounded-xl p-4 mb-6`}
             />
           </TouchableOpacity>
 
@@ -124,7 +123,7 @@ const LeaveRequestForm = () => {
               value={endDate}
               placeholder="Select End Date"
               editable={false} // Make it non-editable
-              className={`border border-gray-300 text-md rounded-xl p-4 mb-6`}
+              className={`border border-gray-300 text-sm rounded-xl p-4 mb-6`}
             />
           </TouchableOpacity>
 
