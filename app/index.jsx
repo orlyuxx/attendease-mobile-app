@@ -14,7 +14,6 @@ import React from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { images, icons } from "../constants";
 import { Link } from "expo-router";
-import { hide } from "expo-splash-screen";
 import LoginInput from "../components/LoginInput";
 import { useRouter } from "expo-router";
 
