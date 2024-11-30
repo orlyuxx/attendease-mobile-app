@@ -65,10 +65,12 @@ const Home = () => {
         </View>
 
         {/* Calendar Strip */}
-        <CalendarStrip />
+        <View className="mb-4">
+          <CalendarStrip />
+        </View>
 
         {/* Today Attendance Section */}
-        <View className="mt-8 px-6">
+        <View className="mt-8 px-6 mb-4">
           <Text className="text-md font-psemibold text-text-primary mb-4">
             Today's Attendance
           </Text>

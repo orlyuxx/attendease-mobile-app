@@ -28,6 +28,7 @@ const LeaveRequestForm = () => {
   const [isFocusedReason, setIsFocusedReason] = useState(false);
 
   const router = useRouter();
+  const startDateRef = useRef(null); // Add this line to create a reference for the start date input
 
   // Function to refresh the page
   const onRefresh = () => {
@@ -89,6 +90,7 @@ const LeaveRequestForm = () => {
             onBlur={() => setIsFocusedLeaveType(false)}
             returnKeyType="next" // Set return key type to "next"
             onSubmitEditing={() => startDateRef.current.focus()} // Focus next input
+            ref={startDateRef} // Add this line to assign the ref to the TextInput
           />
 
           {/* Start Date Input */}

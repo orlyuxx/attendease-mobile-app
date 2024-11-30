@@ -32,6 +32,8 @@ const TabsLayout = () => {
           tabBarStyle: {
             borderTopLeftRadius: 30,
             borderTopRightRadius: 30,
+            borderTopWidth: 1, // Add border width
+            borderTopColor: "#000000", // Set border color
             position: "absolute",
             overflow: "hidden",
             elevation: 5,
