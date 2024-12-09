@@ -1,6 +1,7 @@
 import { View, Text, Image } from "react-native";
 import { Tabs, Redirect } from "expo-router";
 import React from "react";
+import { StatusBar } from "react-native";
 
 import { icons } from "../../constants";
 
@@ -25,15 +26,16 @@ const TabIcon = ({ icon, color, focused }) => {
 const TabsLayout = () => {
   return (
     <>
+      <StatusBar backgroundColor="#1b5dda" barStyle="light-content" />
       <Tabs
         screenOptions={{
           tabBarShowLabel: false,
           tabBarItemStyle: { width: 120 },
           tabBarStyle: {
-            borderTopLeftRadius: 30,
-            borderTopRightRadius: 30,
-            borderTopWidth: 1, // Add border width
-            borderTopColor: "#000000", // Set border color
+            // borderTopLeftRadius: 30,
+            // borderTopRightRadius: 30,
+            // borderTopWidth: 1, // Add border width
+            // borderTopColor: "#000000", // Set border color
             position: "absolute",
             overflow: "hidden",
             elevation: 5,

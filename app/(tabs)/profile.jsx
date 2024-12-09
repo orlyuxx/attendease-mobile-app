@@ -1,9 +1,23 @@
-import { View, Text, TouchableOpacity, Image, Alert } from "react-native";
+import {
+  View,
+  Text,
+  TouchableOpacity,
+  Image,
+  Alert,
+  ScrollView,
+} from "react-native";
 import React from "react";
 import { images } from "../../constants";
 import Icon from "react-native-vector-icons/MaterialIcons";
 import { useRouter } from "expo-router";
 import { handleLogout } from "../../components/api/HandleLogout";
+
+import GetDepartments from "../../components/api/GetDepartments";
+import GetLeaveTypes from "../../components/api/GetLeaveTypes";
+import GetShifts from "../../components/api/GetShifts";
+import GetLeaves from "../../components/api/GetLeaves";
+import GetAttendanceRecords from "../../components/api/GetAttendanceRecords";
+import GetPassSlips from "../../components/api/GetPassSlips";
 
 const Profile = () => {
   const router = useRouter();
@@ -17,7 +31,15 @@ const Profile = () => {
   };
 
   return (
-    <View className="flex-1 bg-white p-5">
+    <ScrollView className="flex-1 bg-white px-6 pt-6">
+      {/* Check if data are fetched */}
+      {/* <GetDepartments /> */}
+      {/* <GetLeaveTypes /> */}
+      {/* <GetShifts /> */}
+      {/* <GetLeaves /> */}
+      {/* <GetAttendanceRecords /> */}
+      {/* <GetPassSlips /> */}
+
       {/* Header Section */}
       <View className="flex-row justify-between items-center mb-24">
         <Text className="text-text-header text-xl font-psemibold">Profile</Text>
@@ -104,7 +126,7 @@ const Profile = () => {
           <Text className="text-lg font-psemibold">17</Text>
         </View>
       </View>
-    </View>
+    </ScrollView>
   );
 };
 
