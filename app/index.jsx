@@ -12,10 +12,12 @@ import {
 } from "react-native";
 import React from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { images, icons } from "../constants";
+import { images } from "../constants";
 import { Link } from "expo-router";
 import LoginInput from "../components/LoginInput";
 import { useRouter } from "expo-router";
+import { handleLogin } from "../components/api/HandleLogin";
+import Toast from "react-native-toast-message";
 
 export default function App() {
   const router = useRouter();
@@ -24,8 +26,8 @@ export default function App() {
   const [emailFocused, setEmailFocused] = React.useState(false);
   const [passwordFocused, setPasswordFocused] = React.useState(false);
   const [refreshing, setRefreshing] = React.useState(false);
-  const [passwordVisible, setPasswordVisible] = React.useState(false);
   const passwordInputRef = React.useRef(null);
+  const [isLoading, setIsLoading] = React.useState(false);
 
   const onRefresh = React.useCallback(() => {
     setRefreshing(true);
@@ -45,8 +47,19 @@ export default function App() {
     setPasswordFocused(false);
   };
 
-  const handleLogin = () => {
-    router.push("/(tabs)/home");
+  const onLoginPress = async () => {
+    try {
+      setIsLoading(true);
+      await handleLogin(router, email, password);
+    } catch (error) {
+      Toast.show({
+        type: "error",
+        text1: "Login Failed",
+        text2: error.message || "An error occurred during login.",
+      });
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
@@ -62,17 +75,15 @@ export default function App() {
         <TouchableWithoutFeedback onPress={handlePressOutside}>
           <View className="w-full min-h-full px-6 pt-8">
             <View>
-              <View>
-                <Text className="font-pextrabold text-3xl text-text-header">
-                  Welcome Back 👋
-                </Text>
-                <Text className="font-pextrabold text-3xl text-text-header">
-                  to Attendease
-                </Text>
-                <Text className="text-md font-pregular pt-2 text-text-sub">
-                  Hello there, login to continue
-                </Text>
-              </View>
+              <Text className="font-pextrabold text-3xl text-text-header">
+                Welcome Back 👋
+              </Text>
+              <Text className="font-pextrabold text-3xl text-text-header">
+                to Attendease
+              </Text>
+              <Text className="text-md font-pregular pt-2 text-text-sub">
+                Hello there, login to continue
+              </Text>
             </View>
 
             <View className="items-center my-4">
@@ -92,9 +103,7 @@ export default function App() {
               onBlur={() => setEmailFocused(false)}
               returnKeyType="next"
               onSubmitEditing={() => {
-                setTimeout(() => {
-                  passwordInputRef.current.focus();
-                }, 0.5);
+                passwordInputRef.current.focus();
               }}
             />
 
@@ -105,8 +114,8 @@ export default function App() {
               isFocused={passwordFocused}
               onFocus={() => setPasswordFocused(true)}
               onBlur={() => setPasswordFocused(false)}
-              secureTextEntry={!passwordVisible}
-              inputRef={passwordInputRef}
+              secureTextEntry={true}
+              ref={passwordInputRef}
             />
 
             <TouchableOpacity className="mb-2 self-end">
@@ -116,12 +125,15 @@ export default function App() {
             </TouchableOpacity>
 
             <TouchableOpacity
-              className="bg-my-blue w-full py-3 rounded-xl mb-4"
+              className={`bg-my-blue w-full py-3 rounded-xl mb-4 ${
+                isLoading ? "opacity-70" : ""
+              }`}
               activeOpacity={0.7}
-              onPress={handleLogin}
+              onPress={onLoginPress}
+              disabled={isLoading}
             >
               <Text className="text-white text-center font-semibold font-psemibold">
-                Login
+                {isLoading ? "Logging in..." : "Login"}
               </Text>
             </TouchableOpacity>
 
@@ -129,7 +141,7 @@ export default function App() {
               Didn't have an account?{" "}
               <Link
                 href="/sign-up"
-                className=" font-pregular text-my-blue-500 underline"
+                className="font-pregular text-my-blue-500 underline"
               >
                 Register
               </Link>
@@ -138,6 +150,7 @@ export default function App() {
         </TouchableWithoutFeedback>
       </ScrollView>
       <StatusBar backgroundColor="#1b5dda" barStyle="light-content" />
+      <Toast />
     </SafeAreaView>
   );
 }

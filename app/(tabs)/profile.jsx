@@ -1,11 +1,20 @@
-import { View, Text, TouchableOpacity, Image } from "react-native";
+import { View, Text, TouchableOpacity, Image, Alert } from "react-native";
 import React from "react";
 import { images } from "../../constants";
 import Icon from "react-native-vector-icons/MaterialIcons";
 import { useRouter } from "expo-router";
+import { handleLogout } from "../../components/api/HandleLogout";
 
 const Profile = () => {
   const router = useRouter();
+
+  const onLogoutPress = async () => {
+    try {
+      await handleLogout(router);
+    } catch (error) {
+      Alert.alert("Logout Failed", error.message);
+    }
+  };
 
   return (
     <View className="flex-1 bg-white p-5">
@@ -13,9 +22,7 @@ const Profile = () => {
       <View className="flex-row justify-between items-center mb-24">
         <Text className="text-text-header text-xl font-psemibold">Profile</Text>
         <TouchableOpacity
-          onPress={() => {
-            /* Add your login function here */
-          }}
+          onPress={onLogoutPress}
           className="flex-row items-center"
         >
           <Text className="text-red-500 font-pmedium">Log out</Text>
