@@ -38,7 +38,16 @@ export const handleLogin = async (router, email, password) => {
       throw new Error(data.message || "Login failed");
     }
 
+    // Store token
     await SecureStore.setItemAsync("authToken", data.token);
+
+    // Store user ID using the correct column name
+    if (data.user && data.user.user_id) {
+      await SecureStore.setItemAsync("userId", data.user.user_id.toString());
+      console.log("Stored user ID:", data.user.user_id);
+    } else {
+      console.warn("User ID not found in login response");
+    }
 
     // Use replace instead of push to prevent going back to login
     router.replace("/(tabs)/home");
@@ -62,14 +71,19 @@ export const getAuthToken = async () => {
   return await SecureStore.getItemAsync("authToken");
 };
 
+// Function to retrieve user ID
+export const getUserId = async () => {
+  return await SecureStore.getItemAsync("userId");
+};
+
 // Example of using the token in another API call
 export const fetchProtectedData = async () => {
-  const token = await getAuthToken(); // Retrieve the token
+  const token = await getAuthToken();
   const response = await fetch(`${API_BASE_URL}/api/protected`, {
     method: "GET",
     headers: {
       "Content-Type": "application/json",
-      Authorization: `Bearer ${token}`, // Include the token in the headers
+      Authorization: `Bearer ${token}`,
     },
   });
 

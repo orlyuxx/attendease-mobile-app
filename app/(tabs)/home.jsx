@@ -7,17 +7,70 @@ import {
   Alert,
   RefreshControl,
 } from "react-native";
-import React from "react";
+import React, { useEffect } from "react";
 import { images } from "../../constants";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { Link } from "expo-router";
+import { Link, useLocalSearchParams } from "expo-router";
 import Icon from "react-native-vector-icons/MaterialIcons";
 import AttendanceCard from "../../components/AttendanceCard";
 import CalendarStrip from "../../components/CalendarStrip";
 import Toast from "react-native-toast-message";
+import GetUserDetails from "../../components/api/GetUserDetails";
+import GetDepartments from "../../components/api/GetDepartments";
 
 const Home = () => {
+  const { refresh } = useLocalSearchParams();
   const [refreshing, setRefreshing] = React.useState(false);
+  const [userData, setUserData] = React.useState(null);
+  const [departments, setDepartments] = React.useState(null);
+  const [isLoading, setIsLoading] = React.useState(true);
+
+  // Add this function to fetch user data
+  const fetchUserData = async () => {
+    try {
+      const userResponse = await GetUserDetails(); // Fetch user details
+      setUserData(userResponse); // Update state with user data
+    } catch (error) {
+      console.error("Error fetching user data:", error);
+    }
+  };
+
+  useEffect(() => {
+    if (refresh) {
+      // Refetch user data
+      fetchUserData();
+    }
+  }, [refresh]);
+
+  // Get department name helper function
+  const getDepartmentName = (departmentId) => {
+    if (!departments) return "Loading...";
+    const department = departments.find(
+      (dept) => dept.department_id === departmentId
+    );
+    return department ? department.department_name : "Unknown Department";
+  };
+
+  // Fetch user data and departments
+  React.useEffect(() => {
+    const fetchData = async () => {
+      try {
+        setIsLoading(true);
+        const [userResponse, departmentsResponse] = await Promise.all([
+          GetUserDetails(),
+          GetDepartments(),
+        ]);
+
+        setUserData(userResponse);
+        setDepartments(departmentsResponse);
+      } catch (error) {
+        console.error("Error fetching data:", error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+    fetchData();
+  }, []);
 
   const handleLogAttendance = () => {
     // Your logic for logging attendance
@@ -47,15 +100,19 @@ const Home = () => {
           <View className="flex-row justify-between items-center px-6 mt-6">
             <View className="flex-row items-center gap-3">
               <Image
-                source={images.profile}
+                source={
+                  userData?.image ? { uri: userData.image } : images.profile
+                }
                 className="w-12 h-12 rounded-full border-2 border-gray-300 bg-gray-50"
               />
               <View>
-                <Text className="text-text-header font-pblack text-xl">
-                  Orlando Donesa
+                <Text className="text-text-header font-pblack text-lg">
+                  {userData
+                    ? `${userData.firstname} ${userData.lastname}`
+                    : "Loading..."}
                 </Text>
-                <Text className="text-text-sub font-psemibold text-md">
-                  IT Department
+                <Text className="text-text-sub font-psemibold text-sm">
+                  {getDepartmentName(userData?.department_id)}
                 </Text>
               </View>
             </View>

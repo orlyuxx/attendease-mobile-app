@@ -1,4 +1,4 @@
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import {
   View,
   Text,
@@ -10,6 +10,7 @@ import {
 } from "react-native";
 import Icon from "react-native-vector-icons/MaterialIcons";
 import { useRouter } from "expo-router";
+import GetUserDetails from "../components/api/GetUserDetails";
 
 const EditProfile = () => {
   const router = useRouter();
@@ -19,6 +20,7 @@ const EditProfile = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [refreshing, setRefreshing] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
 
   // Create refs for the text inputs
   const lastNameInput = useRef(null);
@@ -31,17 +33,44 @@ const EditProfile = () => {
   const [emailFocused, setEmailFocused] = useState(false);
   const [passwordFocused, setPasswordFocused] = useState(false);
 
+  // Fetch user data when component mounts
+  useEffect(() => {
+    const fetchUserData = async () => {
+      try {
+        setIsLoading(true);
+        const userData = await GetUserDetails();
+
+        // Pre-fill the form fields
+        setFirstName(userData.firstname || "");
+        setLastName(userData.lastname || "");
+        setEmail(userData.email || "");
+        // Don't set password as it's typically not returned from the API
+      } catch (error) {
+        console.error("Error fetching user details:", error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchUserData();
+  }, []);
+
   const handleRefresh = () => {
     setRefreshing(true);
-    // Reset all fields
-    setFirstName("");
-    setLastName("");
-    setEmail("");
-    setPassword("");
-    // Dismiss the keyboard
+    // Reset all fields to current user data instead of empty strings
+    fetchUserData();
     Keyboard.dismiss();
     setRefreshing(false);
   };
+
+  // Loading state
+  if (isLoading) {
+    return (
+      <View className="flex-1 bg-white justify-center items-center">
+        <Text className="text-text-sub font-pmedium">Loading...</Text>
+      </View>
+    );
+  }
 
   return (
     <ScrollView
@@ -49,7 +78,7 @@ const EditProfile = () => {
       refreshControl={
         <RefreshControl refreshing={refreshing} onRefresh={handleRefresh} />
       }
-      keyboardShouldPersistTaps="handled" // Dismiss keyboard on tapping outside
+      keyboardShouldPersistTaps="handled"
     >
       <View className="flex-row items-center mb-12 pb-4 border-b-2 border-gray-200">
         <TouchableOpacity onPress={() => router.back()}>
@@ -112,7 +141,7 @@ const EditProfile = () => {
         />
       </View>
 
-      <View className="mb-4">
+      {/* <View className="mb-4">
         <Text className="text-sm font-pregular text-text-sub mb-1">
           Password
         </Text>
@@ -129,7 +158,7 @@ const EditProfile = () => {
           returnKeyType="done" // Show "Done" button on keyboard
           onSubmitEditing={Keyboard.dismiss} // Dismiss keyboard on submit
         />
-      </View>
+      </View> */}
 
       <TouchableOpacity
         className="bg-my-blue w-full py-3 rounded-xl mt-8"
